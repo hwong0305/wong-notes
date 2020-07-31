@@ -89,7 +89,7 @@ const Editor = () => {
       <div className="row">
         <div className="col-12">
           <SimpleMDE
-            onChange={(value) => {
+            onChange={value => {
               setMark(value)
             }}
           />

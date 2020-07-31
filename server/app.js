@@ -37,6 +37,31 @@ app.post('/api/notes', (req, res) => {
   )
 })
 
+app.put('/api/notes/:id', (req, res) => {
+  const { name, body } = req.body
+  const { id } = req.params
+
+  fs.writeFile(
+    path.join(__dirname, 'notes', id),
+    JSON.stringify(
+      {
+        id,
+        name,
+        body
+      },
+      err => {
+        if (err) {
+          return res.status(500).send({
+            error: 'Error writing to file'
+          })
+        }
+
+        res.status(201).send('success')
+      }
+    )
+  )
+})
+
 app.listen(5501, () => {
   console.log('now listening on port 5051')
 })
