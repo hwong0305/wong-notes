@@ -12,7 +12,7 @@ function App() {
         <Route exact path="/">
           <Viewer />
         </Route>
-        <Route path="/notes/:id">
+        <Route exact path="/notes/:id">
           <Note />
         </Route>
         <Route path="/notes/:id/edit">
