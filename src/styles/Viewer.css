@@ -1,0 +1,32 @@
+.header-height {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 75px;
+  border-bottom: solid 1px #dee2e6;
+}
+
+.list-header-height {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 76px;
+  border-bottom: solid 1px #dee2e6;
+}
+
+.content-height {
+  max-height: calc(100vh - 75px);
+  overflow: auto;
+  padding: 3%;
+}
+
+.list-height {
+  max-height: calc(100vh - 75px);
+  overflow: auto;
+}
+
+#mobileMenu {
+  position: fixed;
+  top: 15px;
+  z-index: 200;
+}
