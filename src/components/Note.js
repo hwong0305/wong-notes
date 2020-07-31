@@ -1,16 +1,17 @@
 import React from 'react'
+import { Link, useParams } from 'react-router-dom'
 
 const Note = () => {
-  // Placeholder
+  const { id } = useParams()
   return (
     <div className="container">
       <section className="my-3">
-        <a href="#" className="btn btn-link">
+        <Link to="/" className="btn btn-link">
           Back
-        </a>
-        <a href="#" className="btn btn-primary">
+        </Link>
+        <Link to={`/notes/${id}/edit`} className="btn btn-primary">
           Edit
-        </a>
+        </Link>
       </section>
       <article>
         <header>
