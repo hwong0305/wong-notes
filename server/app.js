@@ -32,7 +32,9 @@ app.post('/api/notes', (req, res) => {
           error: 'Error writing to the file'
         })
       }
-      res.status(201).send('success')
+      res.status(201).send({
+        success: true
+      })
     }
   )
 })
@@ -56,7 +58,9 @@ app.put('/api/notes/:id', (req, res) => {
           })
         }
 
-        res.status(201).send('success')
+        res.status(201).send({
+          success: 'true'
+        })
       }
     )
   )
