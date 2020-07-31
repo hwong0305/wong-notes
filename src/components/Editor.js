@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import { useParams } from "react-router-dom";
-import SimpleMDE from "react-simplemde-editor";
-import "easymde/dist/easymde.min.css";
-import "../styles/Editor.css";
+import React, { useState } from 'react'
+import { useParams } from 'react-router-dom'
+import SimpleMDE from 'react-simplemde-editor'
+import 'easymde/dist/easymde.min.css'
+import '../styles/Editor.css'
 
 const Editor = () => {
-  const [mark, setMark] = useState("");
-  const { id } = useParams();
+  const [mark, setMark] = useState('')
+  const { id } = useParams()
   return (
     <div className="container">
       <div className="row mb-2">
@@ -90,13 +90,13 @@ const Editor = () => {
         <div className="col-12">
           <SimpleMDE
             onChange={(value) => {
-              setMark(value);
+              setMark(value)
             }}
           />
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Editor;
+export default Editor
