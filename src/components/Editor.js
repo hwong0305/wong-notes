@@ -1,82 +1,102 @@
-import React from "react";
+import React, { useState } from "react";
+import { useParams } from "react-router-dom";
+import SimpleMDE from "react-simplemde-editor";
+import "easymde/dist/easymde.min.css";
 import "../styles/Editor.css";
 
-const Editor = () => (
-  <div class="container">
-    <div class="row mb-2">
-      <div class="col-12">
-        <button
-          class="btn"
-          type="button"
-          data-toggle="modal"
-          data-target="#fileNameModal"
-        >
-          <span class="text-info h1" id="file"></span>
-        </button>
-        <div
-          class="modal fade"
-          id="fileNameModal"
-          tabindex="-1"
-          aria-labelledby="fileNameModalLabel"
-          aria-hidden="true"
-        >
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="fileNameModalLabel">
-                  Rename Note
-                </h5>
-              </div>
-              <div class="modal-body">
-                <div>
-                  <label for="exampleFormControlInput1" class="form-label">
-                    New File Name
-                  </label>
-                  <input type="text" class="form-control" id="fileeditor" />
+const Editor = () => {
+  const [mark, setMark] = useState("");
+  const { id } = useParams();
+  return (
+    <div className="container">
+      <div className="row mb-2">
+        <div className="col-12">
+          <button
+            className="btn"
+            type="button"
+            data-toggle="modal"
+            data-target="#fileNameModal"
+          >
+            <span className="text-info h1" id="file">
+              {id}
+            </span>
+          </button>
+          <div
+            className="modal fade"
+            id="fileNameModal"
+            tabIndex="-1"
+            aria-labelledby="fileNameModalLabel"
+            aria-hidden="true"
+          >
+            <div className="modal-dialog">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title" id="fileNameModalLabel">
+                    Rename Note
+                  </h5>
                 </div>
-              </div>
-              <div class="modal-footer">
-                <button
-                  type="button"
-                  class="btn btn-secondary"
-                  data-dismiss="modal"
-                  id="closeModal"
-                >
-                  Close
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-primary"
-                  data-dismiss="modal"
-                  id="saveModal"
-                >
-                  Save changes
-                </button>
+                <div className="modal-body">
+                  <div>
+                    <label
+                      htmlFor="exampleFormControlInput1"
+                      className="form-label"
+                    >
+                      New File Name
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="fileeditor"
+                    />
+                  </div>
+                </div>
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    data-dismiss="modal"
+                    id="closeModal"
+                  >
+                    Close
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    data-dismiss="modal"
+                    id="saveModal"
+                  >
+                    Save changes
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="input-group mb-4">
-      <input type="text" class="form-control" placeholder="commit message" />
-      <button class="btn btn-outline-primary" id="action">
-        Submit
-      </button>
-      <a href="#" class="btn btn-outline-danger" id="cancel">
-        Cancel
-      </a>
-    </div>
-    <div class="row">
-      <div class="col-12">
-        <textarea
-          id="mkdown"
-          class="markdown-area"
-          placeholder="Start typing markdown here"
-        ></textarea>
+      <div className="input-group mb-4">
+        <input
+          type="text"
+          className="form-control"
+          placeholder="commit message"
+        />
+        <button className="btn btn-outline-primary" id="action">
+          Submit
+        </button>
+        <a href="#" className="btn btn-outline-danger" id="cancel">
+          Cancel
+        </a>
+      </div>
+      <div className="row">
+        <div className="col-12">
+          <SimpleMDE
+            onChange={(value) => {
+              setMark(value);
+            }}
+          />
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default Editor;

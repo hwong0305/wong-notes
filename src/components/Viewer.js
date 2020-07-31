@@ -156,7 +156,7 @@ const Viewer = () => {
       <div
         className="modal fade"
         id="menuModal"
-        tabindex="-1"
+        tabIndex="-1"
         aria-labelledby="menuModalLabel"
         aria-hidden="true"
       >
