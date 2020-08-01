@@ -6,6 +6,7 @@ import morgan from 'morgan'
 import { v4 as uuidv4 } from 'uuid'
 
 const app = express()
+app.use(express.json())
 app.use(express.static('build'))
 app.use(cors())
 app.use(morgan('combined'))
@@ -33,7 +34,7 @@ app.post('/api/notes', (req, res) => {
   const { name, body } = req.body
   const id = uuidv4()
   fs.writeFile(
-    path.join(__dirname, 'notes', id),
+    path.join(__dirname, '..', 'notes', id),
     JSON.stringify({
       id,
       name,
