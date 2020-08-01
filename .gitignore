@@ -24,3 +24,4 @@ yarn-error.log*
 
 
 # Don't upload notes unless I specifically says to backup notes
+notes/
