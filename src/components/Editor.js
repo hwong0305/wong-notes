@@ -1,12 +1,39 @@
 import React, { useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useHistory, useParams } from 'react-router-dom'
 import SimpleMDE from 'react-simplemde-editor'
 import 'easymde/dist/easymde.min.css'
 import '../styles/Editor.css'
 
 const Editor = () => {
+  const history = useHistory()
+  const [nameInput, setNameInput] = useState('')
   const [mark, setMark] = useState('')
   const { id } = useParams()
+
+  const handleClose = e => {
+    e.target.dataset.dismiss = null // Start with null
+
+    // If change is succesful then intiiate click
+    setNameInput('')
+    e.target.dataset.dismiss = 'modal'
+    e.target.click()
+  }
+
+  const handleChangeName = e => {
+    e.target.dataset.dismiss = null // Start with null
+
+    console.log(nameInput)
+    // If change is succesful then intiiate click
+    setNameInput('')
+    e.target.dataset.dismiss = 'modal'
+    e.target.click()
+  }
+
+  const handleSubmit = () => {
+    console.log(mark)
+    history.push(`/notes/${id}`)
+  }
+
   return (
     <div className="container">
       <div className="row mb-2">
@@ -47,6 +74,10 @@ const Editor = () => {
                       type="text"
                       className="form-control"
                       id="fileeditor"
+                      value={nameInput}
+                      onChange={e => {
+                        setNameInput(e.target.value)
+                      }}
                     />
                   </div>
                 </div>
@@ -54,16 +85,14 @@ const Editor = () => {
                   <button
                     type="button"
                     className="btn btn-secondary"
-                    data-dismiss="modal"
-                    id="closeModal"
+                    onClick={handleClose}
                   >
                     Close
                   </button>
                   <button
                     type="button"
                     className="btn btn-primary"
-                    data-dismiss="modal"
-                    id="saveModal"
+                    onClick={handleChangeName}
                   >
                     Save changes
                   </button>
@@ -79,12 +108,12 @@ const Editor = () => {
           className="form-control"
           placeholder="commit message"
         />
-        <button className="btn btn-outline-primary" id="action">
+        <button className="btn btn-outline-primary" onClick={handleSubmit}>
           Submit
         </button>
-        <a href="#" className="btn btn-outline-danger" id="cancel">
+        <Link to={`/notes/${id}`} className="btn btn-outline-danger">
           Cancel
-        </a>
+        </Link>
       </div>
       <div className="row">
         <div className="col-12">
