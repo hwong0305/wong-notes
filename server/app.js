@@ -26,6 +26,7 @@ app.get('/api/notes/:id', (req, res) => {
     if (err) {
       return res.status(500).send('The file does not exist')
     }
+    // When reading from file, the data needs to be parsed first
     res.json(JSON.parse(data))
   })
 })
