@@ -81,6 +81,21 @@ app.put('/api/notes/:id', (req, res) => {
   )
 })
 
+app.delete('/api/notes/:id', (req, res) => {
+  const { id } = req.params
+
+  fs.unlink(path.join(__dirname, '..', 'notes', id), err => {
+    if (err) {
+      return res.status(500).send({
+        error: 'Error deleting file'
+      })
+    }
+    res.send({
+      success: true
+    })
+  })
+})
+
 app.listen(5501, () => {
   console.log('now listening on port 5051')
 })
