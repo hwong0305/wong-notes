@@ -32,7 +32,7 @@ const Editor = () => {
   }, [id])
 
   const handleChangeName = () => {
-    // If change is succesful then intiiate click
+    // If change is successful then initiate click
     fetch(`https://hellosrv.devwong.com/api/notes/${id}`, {
       method: 'PUT',
       headers: {
