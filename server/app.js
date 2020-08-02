@@ -21,7 +21,15 @@ app.use(morgan('combined'))
 app.get('/api/notes', (_req, res) => {
   readdir(path.join(__dirname, '..', 'notes'))
     .then(data => {
-      res.json(data)
+      const response = []
+      for (let note of data) {
+        response.push(
+          readFile(path.join(__dirname, '..', 'notes', note)).then(file =>
+            JSON.parse(file)
+          )
+        )
+      }
+      Promise.all(response).then(data => res.json(data))
     })
     .catch(err => {
       console.log(err)

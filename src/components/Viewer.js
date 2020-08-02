@@ -49,14 +49,14 @@ const Viewer = () => {
               <button
                 type="button"
                 className={`list-group-item list-group-item-action ${
-                  noteItem === note.id ? 'active' : ''
+                  noteItem.id === note.id ? 'active' : ''
                 }`}
                 onClick={() => {
-                  handleSwitchNote(noteItem)
+                  handleSwitchNote(noteItem.id)
                 }}
-                key={noteItem}
+                key={noteItem.id}
               >
-                {noteItem}
+                {noteItem.name}
               </button>
             ))}
           </div>
