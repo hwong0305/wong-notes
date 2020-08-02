@@ -9,6 +9,7 @@ const Editor = () => {
   const [name, setName] = useState('')
   const [nameInput, setNameInput] = useState('')
   const [mark, setMark] = useState('')
+  const [nameToggle, setToggle] = useState(false)
   const { id } = useParams()
 
   useEffect(() => {
@@ -30,17 +31,7 @@ const Editor = () => {
       })
   }, [id])
 
-  const handleClose = e => {
-    e.target.dataset.dismiss = null // Start with null
-
-    setNameInput(name)
-    e.target.dataset.dismiss = 'modal'
-    e.target.click()
-  }
-
-  const handleChangeName = e => {
-    e.target.dataset.dismiss = null // Start with null
-
+  const handleChangeName = () => {
     // If change is succesful then intiiate click
     fetch(`https://hellosrv.devwong.com/api/notes/${id}`, {
       method: 'PUT',
@@ -60,8 +51,7 @@ const Editor = () => {
       })
       .then(() => {
         setName(nameInput)
-        e.target.dataset.dismiss = 'modal'
-        e.target.click()
+        setToggle(!nameToggle)
       })
       .catch(err => {
         alert('Error changing name')
@@ -69,8 +59,7 @@ const Editor = () => {
   }
 
   const handleSubmit = () => {
-    console.log(mark)
-    fetch(`https://hellosrv.devwong.com/api/notes${id}`, {
+    fetch(`https://hellosrv.devwong.com/api/notes/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -84,7 +73,6 @@ const Editor = () => {
         if (!response.ok) {
           throw new Error('Error submitting change')
         }
-
         return response.json()
       })
       .then(() => {
@@ -99,66 +87,45 @@ const Editor = () => {
     <div className="container">
       <div className="row mb-2">
         <div className="col-12">
-          <button
-            className="btn"
-            type="button"
-            data-toggle="modal"
-            data-target="#fileNameModal"
-          >
-            <span className="text-info h1" id="file">
-              {name}
-            </span>
-          </button>
-          <div
-            className="modal fade"
-            id="fileNameModal"
-            tabIndex="-1"
-            aria-labelledby="fileNameModalLabel"
-            aria-hidden="true"
-          >
-            <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title" id="fileNameModalLabel">
-                    Rename Note
-                  </h5>
-                </div>
-                <div className="modal-body">
-                  <div>
-                    <label
-                      htmlFor="exampleFormControlInput1"
-                      className="form-label"
-                    >
-                      New File Name
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="fileeditor"
-                      value={nameInput}
-                      onChange={e => {
-                        setNameInput(e.target.value)
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="modal-footer">
+          <div className="row mt-3">
+            <div className="col-6">
+              {!nameToggle && (
+                <button
+                  className="btn"
+                  type="button"
+                  onClick={() => {
+                    setToggle(!nameToggle)
+                  }}
+                >
+                  <span className="h1 text-info">{name}</span>
+                </button>
+              )}
+              {!!nameToggle && (
+                <div className="input-group">
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={nameInput}
+                    onChange={e => {
+                      setNameInput(e.target.value)
+                    }}
+                  />
                   <button
-                    type="button"
-                    className="btn btn-secondary"
-                    onClick={handleClose}
+                    className="btn btn-outline-danger"
+                    onClick={() => {
+                      setToggle(!nameToggle)
+                    }}
                   >
-                    Close
+                    Cancel
                   </button>
                   <button
-                    type="button"
-                    className="btn btn-primary"
+                    className="btn btn-outline-primary"
                     onClick={handleChangeName}
                   >
-                    Save changes
+                    Submit
                   </button>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
@@ -168,10 +135,6 @@ const Editor = () => {
           type="text"
           className="form-control"
           placeholder="commit message"
-          value={nameInput}
-          onChange={e => {
-            setNameInput(e.target.value)
-          }}
         />
         <button className="btn btn-outline-primary" onClick={handleSubmit}>
           Submit
@@ -183,14 +146,14 @@ const Editor = () => {
       <div className="row">
         <div className="col-12">
           <SimpleMDE
-            value={mark}
-            onChange={value => {
-              setMark(value)
+            onChange={newVal => {
+              setMark(newVal)
             }}
             options={{
               status: false,
               spellChecker: false
             }}
+            value={mark}
           />
         </div>
       </div>
