@@ -1,8 +1,23 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import showdown from 'showdown'
+
+const converter = new showdown.Converter()
 
 const Note = () => {
   const { id } = useParams()
+  const [name, setName] = useState(null)
+  const [mark, setMark] = useState(null)
+
+  useEffect(() => {
+    fetch(`https://hellosrv.devwong.com/api/notes/${id}`)
+      .then(r => r.json())
+      .then(body => {
+        setName(body.name)
+        setMark(converter.makeHtml(body.body))
+      })
+  }, [id])
+
   return (
     <div className="container">
       <section className="my-3">
@@ -15,16 +30,9 @@ const Note = () => {
       </section>
       <article>
         <header>
-          <h1 className="text-info">Title</h1>
+          <h1 className="text-info">{name}</h1>
         </header>
-        <section>
-          <p>
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quaerat
-            rem, in unde quas nobis magni necessitatibus corrupti fugit commodi
-            amet consectetur beatae modi aliquid placeat repudiandae excepturi
-            error, officia reprehenderit.
-          </p>
-        </section>
+        <section dangerouslySetInnerHTML={{ __html: mark }} />
       </article>
     </div>
   )
