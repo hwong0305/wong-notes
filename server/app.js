@@ -3,7 +3,14 @@ import cors from 'cors'
 import fs from 'fs'
 import path from 'path'
 import morgan from 'morgan'
+import util from 'util'
 import { v4 as uuidv4 } from 'uuid'
+
+//  Promisify link
+const readdir = util.promisify(fs.readdir)
+const readFile = util.promisify(fs.readFile)
+const unlink = util.promisify(fs.unlink)
+const writeFile = util.promisify(fs.writeFile)
 
 const app = express()
 app.use(express.json())
@@ -12,88 +19,77 @@ app.use(cors())
 app.use(morgan('combined'))
 
 app.get('/api/notes', (_req, res) => {
-  fs.readdir(path.join(__dirname, '..', 'notes'), (err, data) => {
-    if (err) {
-      return res.status(500).send('Error reading files')
-    }
-    res.json(data)
-  })
+  readdir(path.join(__dirname, '..', 'notes'))
+    .then(data => {
+      res.json(data)
+    })
+    .catch(err => {
+      console.log(err)
+      res.status(500).send('Error reading files')
+    })
 })
 
 app.get('/api/notes/:id', (req, res) => {
   const { id } = req.params
-  fs.readFile(path.join(__dirname, '..', 'notes', id), (err, data) => {
-    if (err) {
-      return res.status(500).send('The file does not exist')
-    }
-    // When reading from file, the data needs to be parsed first
-    res.json(JSON.parse(data))
-  })
+  readFile(path.join(__dirname, '..', 'notes', id))
+    .then(data => {
+      res.json(JSON.parse(data))
+    })
+    .catch(err => {
+      res.status(500).send('The file does not exist')
+    })
 })
 
 app.post('/api/notes', (req, res) => {
   const { name, body } = req.body
   const id = uuidv4()
-  fs.writeFile(
+  writeFile(
     path.join(__dirname, '..', 'notes', id),
-    JSON.stringify({
-      id,
-      name,
-      body
-    }),
-    err => {
-      if (err) {
-        return res.status(500).send({
-          error: 'Error writing to the file'
-        })
-      }
-      res.status(201).send({
-        success: true
-      })
-    }
+    JSON.stringify({ id, name, body })
   )
+    .then(() => {
+      res.status(201).send({ success: true })
+    })
+    .catch(err => {
+      console.log(err)
+      res.status(500).send({ error: 'Error writing to the file' })
+    })
 })
 
 app.put('/api/notes/:id', (req, res) => {
   const { name, body } = req.body
   const { id } = req.params
 
-  fs.writeFile(
+  writeFile(
     path.join(__dirname, '..', 'notes', id),
-    JSON.stringify(
-      {
-        id,
-        name,
-        body
-      },
-      err => {
-        if (err) {
-          return res.status(500).send({
-            error: 'Error writing to file'
-          })
-        }
-
-        res.status(201).send({
-          success: 'true'
-        })
-      }
-    )
+    JSON.stringify({ id, name, body })
   )
+    .then(() => {
+      res.status(201).send({
+        success: true
+      })
+    })
+    .catch(() => {
+      res.status(500).send({
+        error: 'Error writing to file'
+      })
+    })
 })
 
 app.delete('/api/notes/:id', (req, res) => {
   const { id } = req.params
 
-  fs.unlink(path.join(__dirname, '..', 'notes', id), err => {
-    if (err) {
-      return res.status(500).send({
+  unlink(path.join(__dirname, '..', 'notes', id))
+    .then(() => {
+      res.send({
+        success: true
+      })
+    })
+    .catch(() => {
+      res.status(500).send({
         error: 'Error deleting file'
       })
-    }
-    res.send({
-      success: true
     })
-  })
 })
 
 app.listen(5501, () => {
