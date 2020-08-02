@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useHistory, useParams } from 'react-router-dom'
 import SimpleMDE from 'react-simplemde-editor'
 import 'easymde/dist/easymde.min.css'
@@ -6,15 +6,34 @@ import '../styles/Editor.css'
 
 const Editor = () => {
   const history = useHistory()
+  const [name, setName] = useState('')
   const [nameInput, setNameInput] = useState('')
   const [mark, setMark] = useState('')
   const { id } = useParams()
 
+  useEffect(() => {
+    fetch(`https://hellosrv.devwong.com/api/notes/${id}`)
+      .then(data => {
+        if (!data.ok) {
+          throw new Error('Fetching note was not successful')
+        }
+        return data.json()
+      })
+      .then(data => {
+        setName(data.name)
+        setNameInput(data.name)
+        setMark(data.body)
+      })
+      .catch(err => {
+        console.log(err)
+        alert('Error loading page')
+      })
+  }, [id])
+
   const handleClose = e => {
     e.target.dataset.dismiss = null // Start with null
 
-    // If change is succesful then intiiate click
-    setNameInput('')
+    setNameInput(name)
     e.target.dataset.dismiss = 'modal'
     e.target.click()
   }
@@ -22,16 +41,58 @@ const Editor = () => {
   const handleChangeName = e => {
     e.target.dataset.dismiss = null // Start with null
 
-    console.log(nameInput)
     // If change is succesful then intiiate click
-    setNameInput('')
-    e.target.dataset.dismiss = 'modal'
-    e.target.click()
+    fetch(`https://hellosrv.devwong.com/api/notes/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        name: nameInput,
+        body: mark
+      })
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Problem renaming note')
+        }
+        return response.json()
+      })
+      .then(() => {
+        setName(nameInput)
+        e.target.dataset.dismiss = 'modal'
+        e.target.click()
+      })
+      .catch(err => {
+        alert('Error changing name')
+      })
   }
 
   const handleSubmit = () => {
     console.log(mark)
-    history.push(`/notes/${id}`)
+    fetch(`https://hellosrv.devwong.com/api/notes${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        name: name,
+        body: mark
+      })
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Error submitting change')
+        }
+
+        return response.json()
+      })
+      .then(() => {
+        history.push(`/notes/${id}`)
+      })
+      .catch(err => {
+        alert('Error submitting change')
+      })
   }
 
   return (
@@ -45,7 +106,7 @@ const Editor = () => {
             data-target="#fileNameModal"
           >
             <span className="text-info h1" id="file">
-              {id}
+              {name}
             </span>
           </button>
           <div
@@ -107,6 +168,10 @@ const Editor = () => {
           type="text"
           className="form-control"
           placeholder="commit message"
+          value={nameInput}
+          onChange={e => {
+            setNameInput(e.target.value)
+          }}
         />
         <button className="btn btn-outline-primary" onClick={handleSubmit}>
           Submit
@@ -118,8 +183,13 @@ const Editor = () => {
       <div className="row">
         <div className="col-12">
           <SimpleMDE
+            value={mark}
             onChange={value => {
               setMark(value)
+            }}
+            options={{
+              status: false,
+              spellChecker: false
             }}
           />
         </div>
