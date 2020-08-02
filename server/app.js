@@ -100,6 +100,6 @@ app.delete('/api/notes/:id', (req, res) => {
     })
 })
 
-app.listen(5501, () => {
-  console.log('now listening on port 5051')
+app.listen(5500, () => {
+  console.log('now listening on port 5500')
 })

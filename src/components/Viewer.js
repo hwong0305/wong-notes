@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 import showdown from 'showdown'
 import '../styles/Viewer.css'
 
+const SERVER_URL = process.env.SERVER_URL || ''
+
 const converter = new showdown.Converter({
   strikethrough: true,
   tables: true
@@ -13,7 +15,7 @@ const Viewer = () => {
   const [noteList, setNoteList] = useState([])
 
   useEffect(() => {
-    fetch('https://hellosrv.devwong.com/api/notes')
+    fetch(`${SERVER_URL}/api/notes`)
       .then(r => r.json())
       .then(body => {
         setNoteList(body)
@@ -21,7 +23,7 @@ const Viewer = () => {
   }, [])
 
   const handleSwitchNote = noteItem => {
-    fetch(`https://hellosrv.devwong.com/api/notes/${noteItem}`)
+    fetch(`${SERVER_URL}/api/notes/${noteItem}`)
       .then(r => r.json())
       .then(body => {
         body.body = converter.makeHtml(body.body)
@@ -120,7 +122,24 @@ const Viewer = () => {
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <div className="modal-body">...</div>
+            <div className="modal-body">
+              <div className="list-group list-group-flush list-height">
+                {noteList.map(noteItem => (
+                  <button
+                    type="button"
+                    className={`list-group-item list-group-item-action ${
+                      noteItem.id === note.id ? 'active' : ''
+                    }`}
+                    onClick={() => {
+                      handleSwitchNote(noteItem.id)
+                    }}
+                    key={noteItem.id}
+                  >
+                    {noteItem.name}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>

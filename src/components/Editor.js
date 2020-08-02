@@ -4,6 +4,8 @@ import SimpleMDE from 'react-simplemde-editor'
 import 'easymde/dist/easymde.min.css'
 import '../styles/Editor.css'
 
+const SERVER_URL = process.env.SERVER_URL || ''
+
 const Editor = () => {
   const history = useHistory()
   const [name, setName] = useState('')
@@ -13,7 +15,7 @@ const Editor = () => {
   const { id } = useParams()
 
   useEffect(() => {
-    fetch(`https://hellosrv.devwong.com/api/notes/${id}`)
+    fetch(`${SERVER_URL}/api/notes/${id}`)
       .then(data => {
         if (!data.ok) {
           throw new Error('Fetching note was not successful')
@@ -33,7 +35,7 @@ const Editor = () => {
 
   const handleChangeName = () => {
     // If change is successful then initiate click
-    fetch(`https://hellosrv.devwong.com/api/notes/${id}`, {
+    fetch(`${SERVER_URL}/api/notes/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -59,7 +61,7 @@ const Editor = () => {
   }
 
   const handleSubmit = () => {
-    fetch(`https://hellosrv.devwong.com/api/notes/${id}`, {
+    fetch(`${SERVER_URL}/api/notes/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'

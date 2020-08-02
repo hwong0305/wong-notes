@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import showdown from 'showdown'
 
+const SERVER_URL = process.env.SERVER_URL || ''
+
 const converter = new showdown.Converter()
 
 const Note = () => {
@@ -10,7 +12,7 @@ const Note = () => {
   const [mark, setMark] = useState(null)
 
   useEffect(() => {
-    fetch(`https://hellosrv.devwong.com/api/notes/${id}`)
+    fetch(`${SERVER_URL}/api/notes/${id}`)
       .then(r => r.json())
       .then(body => {
         setName(body.name)

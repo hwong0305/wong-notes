@@ -4,6 +4,8 @@ import SimpleMDE from 'react-simplemde-editor'
 import 'easymde/dist/easymde.min.css'
 import '../styles/Editor.css'
 
+const SERVER_URL = process.env.SERVER_URL || ''
+
 const Editor = () => {
   const history = useHistory()
   const [name, setName] = useState('')
@@ -11,7 +13,7 @@ const Editor = () => {
   const { id } = useParams()
 
   const handleSubmit = () => {
-    fetch(`https://hellosrv.devwong.com/api/notes/${id}`, {
+    fetch(`${SERVER_URL}/api/notes/${id}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
