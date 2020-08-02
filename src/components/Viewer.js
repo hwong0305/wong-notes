@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import showdown from 'showdown'
 import '../styles/Viewer.css'
 
@@ -64,18 +65,20 @@ const Viewer = () => {
         <div className="col-12 col-sm-8 border mh-100">
           <div className="row header-height">
             <div className="col-12">
-              <button
-                type="button"
-                className="btn btn-primary float-right mx-3"
+              <Link
+                className={` btn btn-primary float-right mx-3 ${
+                  !note && 'disabled'
+                }`}
+                to={`/notes/${note.id}`}
               >
                 Edit
-              </button>
-              <button
-                type="button"
+              </Link>
+              <Link
+                to="/notes/new"
                 className="btn btn-outline-primary float-right"
               >
                 New
-              </button>
+              </Link>
             </div>
           </div>
           <div className="row">
