@@ -4,7 +4,7 @@ import SimpleMDE from 'react-simplemde-editor'
 import 'easymde/dist/easymde.min.css'
 import '../styles/Editor.css'
 
-const SERVER_URL = process.env.SERVER_URL || ''
+const SERVER_URL = process.env.REACT_APP_SERVER_URL || ''
 
 const Editor = () => {
   const history = useHistory()

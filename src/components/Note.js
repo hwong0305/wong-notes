@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import showdown from 'showdown'
 
-const SERVER_URL = process.env.SERVER_URL || ''
+const SERVER_URL = process.env.REACT_APP_SERVER_URL || ''
 
 const converter = new showdown.Converter()
 

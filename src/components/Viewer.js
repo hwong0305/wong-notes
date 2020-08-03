@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import showdown from 'showdown'
 import '../styles/Viewer.css'
 
-const SERVER_URL = process.env.SERVER_URL || ''
+const SERVER_URL = process.env.REACT_APP_SERVER_URL || ''
 
 const converter = new showdown.Converter({
   strikethrough: true,

@@ -12,6 +12,9 @@ const readFile = util.promisify(fs.readFile)
 const unlink = util.promisify(fs.unlink)
 const writeFile = util.promisify(fs.writeFile)
 
+// Environment Port
+const SERVER_PORT = process.env.SERVER_PORT || 5501
+
 const app = express()
 app.use(express.json())
 app.use(express.static('build'))
@@ -100,6 +103,6 @@ app.delete('/api/notes/:id', (req, res) => {
     })
 })
 
-app.listen(5500, () => {
-  console.log('now listening on port 5500')
+app.listen(SERVER_PORT, () => {
+  console.log(`now listening on port ${SERVER_PORT}`)
 })
