@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link, useHistory, useParams } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import SimpleMDE from 'react-simplemde-editor'
 import 'easymde/dist/easymde.min.css'
 import '../styles/Editor.css'
@@ -10,10 +10,9 @@ const Editor = () => {
   const history = useHistory()
   const [name, setName] = useState('')
   const [mark, setMark] = useState('')
-  const { id } = useParams()
 
   const handleSubmit = () => {
-    fetch(`${SERVER_URL}/api/notes/${id}`, {
+    fetch(`${SERVER_URL}/api/notes`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
