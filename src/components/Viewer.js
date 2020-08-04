@@ -73,7 +73,7 @@ const Viewer = () => {
                 }`}
                 to={`/notes/${note.id}`}
               >
-                Edit
+                Open
               </Link>
               <Link
                 to="/notes/new"
