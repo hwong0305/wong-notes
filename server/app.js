@@ -75,7 +75,7 @@ app.put('/api/notes/:id', (req, res) => {
   const { id } = req.params
 
   writeFile(
-    path.join(__dirname, '..', 'notes', id, '.md'),
+    path.join(__dirname, '..', 'notes', `${id}.md`),
     JSON.stringify({ id, name, body })
   )
     .then(() => {
@@ -93,7 +93,7 @@ app.put('/api/notes/:id', (req, res) => {
 app.delete('/api/notes/:id', (req, res) => {
   const { id } = req.params
 
-  unlink(path.join(__dirname, '..', 'notes', id, '.md'))
+  unlink(path.join(__dirname, '..', 'notes', `${id}.md`))
     .then(() => {
       res.send({
         success: true

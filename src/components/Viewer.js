@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { isMobile } from 'react-device-detect'
 import showdown from 'showdown'
 import '../styles/Viewer.css'
 
@@ -11,6 +12,8 @@ const converter = new showdown.Converter({
 })
 
 const Viewer = () => {
+  const openBtnRef = useRef('open')
+  const closeBtnRef = useRef()
   const [note, setNote] = useState('')
   const [noteList, setNoteList] = useState([])
 
@@ -19,6 +22,9 @@ const Viewer = () => {
       .then(r => r.json())
       .then(body => {
         setNoteList(body)
+        if (isMobile || window.innerWidth < 576) {
+          openBtnRef.current.click()
+        }
       })
   }, [])
 
@@ -28,6 +34,10 @@ const Viewer = () => {
       .then(body => {
         body.body = converter.makeHtml(body.body)
         setNote(body)
+        console.log(window.width)
+        if (isMobile || window.innerWidth < 576) {
+          closeBtnRef.current.click()
+        }
       })
   }
 
@@ -97,6 +107,7 @@ const Viewer = () => {
         className="d-block d-sm-none btn btn-outline-info"
         data-toggle="modal"
         data-target="#menuModal"
+        ref={openBtnRef}
       >
         <i className="material-icons">menu</i>
       </button>
@@ -106,6 +117,7 @@ const Viewer = () => {
         tabIndex="-1"
         aria-labelledby="menuModalLabel"
         aria-hidden="true"
+        ref={closeBtnRef}
       >
         <div className="modal-dialog">
           <div className="modal-content">

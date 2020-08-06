@@ -8,7 +8,7 @@ const SERVER_URL = process.env.REACT_APP_SERVER_URL || ''
 
 const Editor = () => {
   const history = useHistory()
-  const [name, setName] = useState('')
+  const [name, setName] = useState(null)
   const [mark, setMark] = useState('')
 
   const handleSubmit = () => {
@@ -18,7 +18,7 @@ const Editor = () => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        name: name,
+        name: name ?? 'null',
         body: mark
       })
     })
