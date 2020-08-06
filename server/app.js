@@ -25,7 +25,6 @@ app.get('/api/notes', (_req, res) => {
   readdir(path.join(__dirname, '..', 'notes'))
     .then(data => {
       const response = []
-      console.log(data)
       for (let note of data) {
         if (note === '.keep') continue
         response.push(
@@ -57,7 +56,6 @@ app.get('/api/notes/:id', (req, res) => {
 app.post('/api/notes', (req, res) => {
   const { name, body } = req.body
   const id = uuidv4()
-  console.log(id)
   writeFile(
     path.join(__dirname, '..', 'notes', `${id}.md`),
     JSON.stringify({ id, name, body })
