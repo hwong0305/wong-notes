@@ -22,14 +22,16 @@ app.use(cors())
 app.use(morgan('combined'))
 
 app.get('/api/notes', (_req, res) => {
-  readdir(path.join(__dirname, '..', 'notes', '.md'))
+  readdir(path.join(__dirname, '..', 'notes'))
     .then(data => {
       const response = []
+      console.log(data)
       for (let note of data) {
+        if (note === '.keep') continue
         response.push(
-          readFile(
-            path.join(__dirname, '..', 'notes', note, '.md')
-          ).then(file => JSON.parse(file))
+          readFile(path.join(__dirname, '..', 'notes', note)).then(file =>
+            JSON.parse(file)
+          )
         )
       }
       Promise.all(response).then(data => res.json(data))
@@ -42,11 +44,12 @@ app.get('/api/notes', (_req, res) => {
 
 app.get('/api/notes/:id', (req, res) => {
   const { id } = req.params
-  readFile(path.join(__dirname, '..', 'notes', id, '.md'))
+  readFile(path.join(__dirname, '..', 'notes', `${id}.md`))
     .then(data => {
       res.json(JSON.parse(data))
     })
     .catch(err => {
+      console.log(err)
       res.status(500).send('The file does not exist')
     })
 })
@@ -54,15 +57,15 @@ app.get('/api/notes/:id', (req, res) => {
 app.post('/api/notes', (req, res) => {
   const { name, body } = req.body
   const id = uuidv4()
+  console.log(id)
   writeFile(
-    path.join(__dirname, '..', 'notes', id, '.md'),
+    path.join(__dirname, '..', 'notes', `${id}.md`),
     JSON.stringify({ id, name, body })
   )
     .then(() => {
       res.status(201).send({ success: true })
     })
     .catch(err => {
-      console.log(err)
       res.status(500).send({ error: 'Error writing to the file' })
     })
 })
