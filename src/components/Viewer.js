@@ -18,6 +18,15 @@ const options = {
   keys: ['name', 'id', 'body']
 }
 
+// Needs to be outside otherwise debounce wouldn't work due to react rerendering
+const searchFunc = (query, list, setFunc) => {
+  const fuse = new Fuse(list, options)
+  const results = fuse.search(query)
+  setFunc(results.map(e => e.item))
+}
+
+const debouncedSearch = _.debounce(searchFunc, 400)
+
 const Viewer = () => {
   const openBtnRef = useRef('open')
   const closeBtnRef = useRef()
@@ -50,19 +59,12 @@ const Viewer = () => {
       })
   }
 
-  const searchFunc = query => {
-    const fuse = new Fuse(noteList, options)
-    setFiltered(fuse.search(query))
-  }
-
-  const debouncedSearch = _.debounce(searchFunc, 300)
-
   const handleSearch = e => {
     setSearch(e.target.value)
-    if (e.target.value === '') {
-      setFiltered(noteList)
+    if (e.target.value) {
+      debouncedSearch(search, noteList, setFiltered)
     } else {
-      debouncedSearch(search)
+      setFiltered(noteList)
     }
   }
 
