@@ -56,6 +56,7 @@ const Note = () => {
       <article>
         <header>
           <h1 className="text-info">{name}</h1>
+          <hr />
         </header>
         <section dangerouslySetInnerHTML={{ __html: mark }} />
       </article>
