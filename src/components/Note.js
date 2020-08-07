@@ -41,6 +41,15 @@ const Note = () => {
       })
   }
 
+  const handleHistory = commit => {
+    fetch(`${SERVER_URL}/api/notes/${id}/logs/${commit}`)
+      .then(r => r.json())
+      .then(body => {
+        setName(body.name)
+        setMark(converter.makeHtml(body.body))
+      })
+  }
+
   return (
     <div className="container">
       <section className="my-3">
@@ -80,8 +89,13 @@ const Note = () => {
               const com = el.hash.slice(0, 8)
               const ago = dayjs(el.date).fromNow()
               return (
-                <li key={el.hash}>
-                  <button className="dropdown-item">
+                <li key={el.hash} className="border-bottom">
+                  <button
+                    className="dropdown-item"
+                    onClick={() => {
+                      handleHistory(el.hash)
+                    }}
+                  >
                     <div className="flex-column align-items-start">
                       <div classname="d-flex w-100 justify-content-between">
                         <h5 className="mb-1 h4">{com}</h5>
