@@ -69,7 +69,7 @@ const Note = () => {
       <div className="btn-group dropup d-none d-sm-block" id="drop">
         <button
           type="button"
-          className="btn btn-secondary dropdown-toggle"
+          className="btn btn-outline-secondary dropdown-toggle"
           data-toggle="dropdown"
           aria-expanded="false"
         >
@@ -81,15 +81,17 @@ const Note = () => {
               const com = el.hash.slice(0, 8)
               const ago = dayjs(el.date).fromNow()
               return (
-                <li className="dropdown-item" key={el.hash}>
-                  <div className="flex-column align-items-start">
-                    <div classname="d-flex w-100 justify-content-between">
-                      <h5 className="mb-1 h4">{com}</h5>
-                      <small>{ago}</small>
+                <li key={el.hash}>
+                  <button className="dropdown-item">
+                    <div className="flex-column align-items-start">
+                      <div classname="d-flex w-100 justify-content-between">
+                        <h5 className="mb-1 h4">{com}</h5>
+                        <small>{ago}</small>
+                      </div>
+                      <p className="mb-1">{el.message}</p>
+                      <small>{el.body || ''}</small>
                     </div>
-                    <p className="mb-1">{el.message}</p>
-                    <small>{el.body || ''}</small>
-                  </div>
+                  </button>
                 </li>
               )
             })}
