@@ -9,6 +9,7 @@
     "cors": "^2.8.5",
     "dayjs": "^1.8.32",
     "express": "^4.17.1",
+    "fuse.js": "^6.4.1",
     "lodash": "^4.17.19",
     "react": "^16.13.1",
     "react-device-detect": "^1.13.1",

@@ -2,6 +2,8 @@ import React, { useRef, useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { isMobile } from 'react-device-detect'
 import showdown from 'showdown'
+import Fuse from 'fuse.js'
+import _ from 'lodash'
 import '../styles/Viewer.css'
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL || ''
@@ -11,17 +13,25 @@ const converter = new showdown.Converter({
   tables: true
 })
 
+const options = {
+  includeScore: true,
+  keys: ['name', 'id', 'body']
+}
+
 const Viewer = () => {
   const openBtnRef = useRef('open')
   const closeBtnRef = useRef()
   const [note, setNote] = useState('')
   const [noteList, setNoteList] = useState([])
+  const [search, setSearch] = useState('')
+  const [filtered, setFiltered] = useState([])
 
   useEffect(() => {
     fetch(`${SERVER_URL}/api/notes`)
       .then(r => r.json())
       .then(body => {
         setNoteList(body)
+        setFiltered(body)
         if ((isMobile || window.innerWidth < 576) && noteList.length) {
           openBtnRef.current.click()
         }
@@ -34,11 +44,26 @@ const Viewer = () => {
       .then(body => {
         body.body = converter.makeHtml(body.body)
         setNote(body)
-        console.log(window.width)
         if (isMobile || window.innerWidth < 576) {
           closeBtnRef.current.click()
         }
       })
+  }
+
+  const searchFunc = query => {
+    const fuse = new Fuse(noteList, options)
+    setFiltered(fuse.search(query))
+  }
+
+  const debouncedSearch = _.debounce(searchFunc, 300)
+
+  const handleSearch = e => {
+    setSearch(e.target.value)
+    if (e.target.value === '') {
+      setFiltered(noteList)
+    } else {
+      debouncedSearch(search)
+    }
   }
 
   return (
@@ -49,16 +74,17 @@ const Viewer = () => {
             <div className="col-12">
               <div className="input-group px-3">
                 <input
-                  id="search"
                   type="text"
                   className="form-control"
                   placeholder="Search"
+                  value={search}
+                  onChange={handleSearch}
                 />
               </div>
             </div>
           </div>
           <div className="list-group list-group-flush list-height">
-            {noteList.map(noteItem => (
+            {filtered.map(noteItem => (
               <button
                 type="button"
                 className={`list-group-item list-group-item-action ${
@@ -136,7 +162,7 @@ const Viewer = () => {
             </div>
             <div className="modal-body">
               <div className="list-group list-group-flush list-height">
-                {noteList.map(noteItem => (
+                {filtered.map(noteItem => (
                   <button
                     type="button"
                     className={`list-group-item list-group-item-action ${

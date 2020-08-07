@@ -8,7 +8,7 @@ const SERVER_URL = process.env.REACT_APP_SERVER_URL || ''
 
 const Editor = () => {
   const history = useHistory()
-  const [name, setName] = useState(null)
+  const [name, setName] = useState('')
   const [mark, setMark] = useState('')
 
   const handleSubmit = () => {
