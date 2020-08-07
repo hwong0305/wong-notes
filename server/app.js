@@ -10,7 +10,6 @@ import { v4 as uuidv4 } from 'uuid'
 //  Promisify link
 const readdir = util.promisify(fs.readdir)
 const readFile = util.promisify(fs.readFile)
-const unlink = util.promisify(fs.unlink)
 const writeFile = util.promisify(fs.writeFile)
 
 // Environment Port
@@ -92,12 +91,11 @@ app.put('/api/notes/:id', async (req, res) => {
 
 app.delete('/api/notes/:id', async (req, res) => {
   const { id } = req.params
+  const git = simpleGit()
   try {
-    await unlink(path.join(__dirname, '..', 'notes', `${id}.md`)).then(() => {
-      res.send({
-        success: true
-      })
-    })
+    git.rm(`./notes/${id}.md`)
+    git.commit(`Removed file ${id}`)
+    res.send({ success: true })
   } catch (err) {
     console.log(err)
     res.status(500).send({
