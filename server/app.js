@@ -106,6 +106,37 @@ app.delete('/api/notes/:id', async (req, res) => {
   }
 })
 
+app.get('/api/notes/:id/logs', async (req, res) => {
+  const { id } = req.params
+  const git = simpleGit()
+  try {
+    const logs = await git.log({ file: `./notes/${id}.md` })
+    res.json(logs)
+  } catch (err) {
+    console.log(err)
+    res.status(500).send({
+      error: 'Error finding logs'
+    })
+  }
+})
+
+app.get('/api/notes/:id/logs/:commit', async (req, res) => {
+  const { id, commit } = req.params
+  const git = simpleGit()
+  try {
+    await git.checkout(commit) // Revert files to commit
+    const buff = await readFile(path.join(__dirname, '..', 'notes', `${id}.md`))
+    const data = JSON.parse(buff.toString('utf8'))
+    await git.checkout('master') // Revert to master
+    res.json(data)
+  } catch (err) {
+    console.log(err)
+    res.status(500).send({
+      error: 'Error finding commit'
+    })
+  }
+})
+
 app.listen(SERVER_PORT, () => {
   console.log(`now listening on port ${SERVER_PORT}`)
 })
