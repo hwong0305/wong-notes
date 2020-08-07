@@ -35,31 +35,8 @@ const Editor = () => {
   }, [id])
 
   const handleChangeName = () => {
-    // If change is successful then initiate click
-    fetch(`${SERVER_URL}/api/notes/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        name: nameInput,
-        body: mark,
-        commit: `Change name to ${nameInput}`
-      })
-    })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Problem renaming note')
-        }
-        return response.json()
-      })
-      .then(() => {
-        setName(nameInput)
-        setToggle(!nameToggle)
-      })
-      .catch(err => {
-        alert('Error changing name')
-      })
+    setName(nameInput)
+    setToggle(!nameToggle)
   }
 
   const handleSubmit = () => {
