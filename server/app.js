@@ -109,7 +109,9 @@ app.get('/api/notes/:id/logs', async (req, res) => {
   const git = simpleGit()
   try {
     const logs = await git.log({ file: `./notes/${id}.md` })
-    res.json(logs)
+    const buff = await readFile(path.join(__dirname, '..', 'notes', `${id}.md`))
+    const data = JSON.parse(buff.toString('utf8'))
+    res.json({ data, logs })
   } catch (err) {
     console.log(err)
     res.status(500).send({

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useHistory, useParams } from 'react-router-dom'
 import showdown from 'showdown'
+import '../styles/Note.css'
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL || ''
 
@@ -9,15 +10,18 @@ const converter = new showdown.Converter()
 const Note = () => {
   const history = useHistory()
   const { id } = useParams()
-  const [name, setName] = useState(null)
-  const [mark, setMark] = useState(null)
+  const [name, setName] = useState('')
+  const [mark, setMark] = useState('')
+  const [commits, setCommits] = useState(null)
 
   useEffect(() => {
-    fetch(`${SERVER_URL}/api/notes/${id}`)
+    fetch(`${SERVER_URL}/api/notes/${id}/logs`)
       .then(r => r.json())
       .then(body => {
-        setName(body.name)
-        setMark(converter.makeHtml(body.body))
+        setName(body.data.name)
+        setMark(converter.makeHtml(body.data.body))
+        console.log(body.logs)
+        setCommits(body.logs.all)
       })
   }, [id])
 
@@ -60,6 +64,24 @@ const Note = () => {
         </header>
         <section dangerouslySetInnerHTML={{ __html: mark }} />
       </article>
+      <div className="btn-group dropup d-none d-sm-block" id="drop">
+        <button
+          type="button"
+          className="btn btn-secondary dropdown-toggle"
+          data-toggle="dropdown"
+          aria-expanded="false"
+        >
+          Dropup
+        </button>
+        <ul class="dropdown-menu">
+          {commits &&
+            commits.map(el => (
+              <li className="dropdown-item" key={el.hash}>
+                {el.message}
+              </li>
+            ))}
+        </ul>
+      </div>
     </div>
   )
 }
