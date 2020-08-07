@@ -13,7 +13,7 @@ const readFile = util.promisify(fs.readFile)
 const writeFile = util.promisify(fs.writeFile)
 
 // Environment Port
-const SERVER_PORT = process.env.SERVER_PORT || 5501
+const SERVER_PORT = process.env.PORT || 5501
 
 const app = express()
 app.use(express.json())
