@@ -22,7 +22,6 @@ const Note = () => {
       .then(body => {
         setName(body.data.name)
         setMark(converter.makeHtml(body.data.body))
-        console.log(body.logs)
         setCommits(body.logs.all)
       })
   }, [id])
