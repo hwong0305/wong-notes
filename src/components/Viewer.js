@@ -22,11 +22,11 @@ const Viewer = () => {
       .then(r => r.json())
       .then(body => {
         setNoteList(body)
-        if (isMobile || window.innerWidth < 576) {
+        if ((isMobile || window.innerWidth < 576) && noteList.length) {
           openBtnRef.current.click()
         }
       })
-  }, [])
+  }, [noteList.length])
 
   const handleSwitchNote = noteItem => {
     fetch(`${SERVER_URL}/api/notes/${noteItem}`)
