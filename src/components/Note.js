@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useHistory, useParams } from 'react-router-dom'
+import dayjs from 'dayjs'
 import showdown from 'showdown'
 import '../styles/Note.css'
+import relativeTime from 'dayjs/plugin/relativeTime'
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL || ''
-
 const converter = new showdown.Converter()
+dayjs.extend(relativeTime)
 
 const Note = () => {
   const history = useHistory()
@@ -75,11 +77,22 @@ const Note = () => {
         </button>
         <ul class="dropdown-menu">
           {commits &&
-            commits.map(el => (
-              <li className="dropdown-item" key={el.hash}>
-                {el.message}
-              </li>
-            ))}
+            commits.map(el => {
+              const com = el.hash.slice(0, 8)
+              const ago = dayjs(el.date).fromNow()
+              return (
+                <li className="dropdown-item" key={el.hash}>
+                  <div className="flex-column align-items-start">
+                    <div classname="d-flex w-100 justify-content-between">
+                      <h5 className="mb-1 h4">{com}</h5>
+                      <small>{ago}</small>
+                    </div>
+                    <p className="mb-1">{el.message}</p>
+                    <small>{el.body || ''}</small>
+                  </div>
+                </li>
+              )
+            })}
         </ul>
       </div>
     </div>
