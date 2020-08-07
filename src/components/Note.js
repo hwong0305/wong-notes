@@ -81,7 +81,7 @@ const Note = () => {
           data-toggle="dropdown"
           aria-expanded="false"
         >
-          Dropup
+          Logs
         </button>
         <ul class="dropdown-menu">
           {commits &&
