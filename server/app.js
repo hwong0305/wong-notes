@@ -3,6 +3,7 @@ import cors from 'cors'
 import fs from 'fs'
 import path from 'path'
 import morgan from 'morgan'
+import simpleGit from 'simple-git'
 import util from 'util'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -54,11 +55,14 @@ app.get('/api/notes/:id', async (req, res) => {
 app.post('/api/notes', async (req, res) => {
   const { name, body } = req.body
   const id = uuidv4()
+  const git = simpleGit()
   try {
     await writeFile(
       path.join(__dirname, '..', 'notes', `${id}.md`),
       JSON.stringify({ id, name, body })
     )
+    await git.add(`./notes/${id}.md`)
+    await git.commit('initial commit')
     res.status(201).send({ success: true })
   } catch (err) {
     console.log(err)
@@ -67,13 +71,16 @@ app.post('/api/notes', async (req, res) => {
 })
 
 app.put('/api/notes/:id', async (req, res) => {
-  const { name, body } = req.body
+  const { name, body, commit } = req.body
   const { id } = req.params
+  const git = simpleGit()
   try {
     await writeFile(
       path.join(__dirname, '..', 'notes', `${id}.md`),
       JSON.stringify({ id, name, body })
     )
+    await git.add(`./notes/${id}.md`)
+    await git.commit(commit || 'unknown edit')
     res.send({ success: true })
   } catch (err) {
     console.log(err)

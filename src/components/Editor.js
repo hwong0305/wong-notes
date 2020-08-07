@@ -12,6 +12,7 @@ const Editor = () => {
   const [nameInput, setNameInput] = useState('')
   const [mark, setMark] = useState('')
   const [nameToggle, setToggle] = useState(false)
+  const [com, setCom] = useState('')
   const { id } = useParams()
 
   useEffect(() => {
@@ -42,7 +43,8 @@ const Editor = () => {
       },
       body: JSON.stringify({
         name: nameInput,
-        body: mark
+        body: mark,
+        commit: `Change name to ${nameInput}`
       })
     })
       .then(response => {
@@ -68,7 +70,8 @@ const Editor = () => {
       },
       body: JSON.stringify({
         name: name,
-        body: mark
+        body: mark,
+        commit: com
       })
     })
       .then(response => {
@@ -137,6 +140,10 @@ const Editor = () => {
           type="text"
           className="form-control"
           placeholder="commit message"
+          value={com}
+          onChange={e => {
+            setCom(e.target.value)
+          }}
         />
         <button className="btn btn-outline-primary" onClick={handleSubmit}>
           Submit
