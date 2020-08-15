@@ -25,4 +25,4 @@ Then your notes will be available on your port.
 3. `git remote add backup your-repository`
 4. `git push backup master`
 
-The first two lines only needs to 
+The first two lines only needs to be run once.
