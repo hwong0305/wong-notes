@@ -1,5 +1,4 @@
 import express from 'express'
-import cors from 'cors'
 import fs from 'fs'
 import path from 'path'
 import morgan from 'morgan'
@@ -15,10 +14,14 @@ const writeFile = util.promisify(fs.writeFile)
 // Environment Port
 const SERVER_PORT = process.env.PORT || 5501
 
+// Git Options
+const gitOptions = {
+  baseDir: './notes'
+}
+
 const app = express()
 app.use(express.json())
 app.use(express.static('build'))
-app.use(cors())
 app.use(morgan('dev'))
 
 app.get('/api/notes', async (_req, res) => {
@@ -26,7 +29,7 @@ app.get('/api/notes', async (_req, res) => {
     const data = await readdir(path.join(__dirname, '..', 'notes'))
     const response = []
     for (let note of data) {
-      if (note === '.keep') continue
+      if (note === '.git') continue
       const buff = await readFile(path.join(__dirname, '..', 'notes', note))
       const file = JSON.parse(buff.toString('utf8'))
       response.push(file)
@@ -54,13 +57,13 @@ app.get('/api/notes/:id', async (req, res) => {
 app.post('/api/notes', async (req, res) => {
   const { name, body } = req.body
   const id = uuidv4()
-  const git = simpleGit()
+  const git = simpleGit(gitOptions)
   try {
     await writeFile(
       path.join(__dirname, '..', 'notes', `${id}.md`),
       JSON.stringify({ id, name, body })
     )
-    await git.add(`./notes/${id}.md`)
+    await git.add(`./${id}.md`)
     await git.commit('initial commit')
     res.status(201).send({ success: true })
   } catch (err) {
@@ -72,13 +75,13 @@ app.post('/api/notes', async (req, res) => {
 app.put('/api/notes/:id', async (req, res) => {
   const { name, body, commit } = req.body
   const { id } = req.params
-  const git = simpleGit()
+  const git = simpleGit(gitOptions)
   try {
     await writeFile(
       path.join(__dirname, '..', 'notes', `${id}.md`),
       JSON.stringify({ id, name, body })
     )
-    await git.add(`./notes/${id}.md`)
+    await git.add(`./${id}.md`)
     await git.commit(commit || 'unknown edit')
     res.send({ success: true })
   } catch (err) {
@@ -91,9 +94,9 @@ app.put('/api/notes/:id', async (req, res) => {
 
 app.delete('/api/notes/:id', async (req, res) => {
   const { id } = req.params
-  const git = simpleGit()
+  const git = simpleGit(gitOptions)
   try {
-    git.rm(`./notes/${id}.md`)
+    git.rm(`./${id}.md`)
     git.commit(`Removed file ${id}`)
     res.send({ success: true })
   } catch (err) {
@@ -106,9 +109,9 @@ app.delete('/api/notes/:id', async (req, res) => {
 
 app.get('/api/notes/:id/logs', async (req, res) => {
   const { id } = req.params
-  const git = simpleGit()
+  const git = simpleGit(gitOptions)
   try {
-    const logs = await git.log({ file: `./notes/${id}.md` })
+    const logs = await git.log({ file: `./${id}.md` })
     const buff = await readFile(path.join(__dirname, '..', 'notes', `${id}.md`))
     const data = JSON.parse(buff.toString('utf8'))
     res.json({ data, logs })
@@ -122,7 +125,7 @@ app.get('/api/notes/:id/logs', async (req, res) => {
 
 app.get('/api/notes/:id/logs/:commit', async (req, res) => {
   const { id, commit } = req.params
-  const git = simpleGit()
+  const git = simpleGit(gitOptions)
   try {
     await git.checkout(commit) // Revert files to commit
     const buff = await readFile(path.join(__dirname, '..', 'notes', `${id}.md`))
