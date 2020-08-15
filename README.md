@@ -3,6 +3,12 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 Self hosted markdown notes web application.
 
+## Initial Setup
+
+1. `mkdir notes`
+2. `cd notes`
+3. `git init`
+
 ## Starting Application
 
 1. `npm install`
