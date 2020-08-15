@@ -1,7 +1,7 @@
 # Wong Notes
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-This application lets you hold a public notes app on your own server. 
+Self hosted markdown notes web application.
 
 ## Starting Application
 
