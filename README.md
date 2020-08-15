@@ -10,3 +10,13 @@ This application lets you hold a public notes app on your own server.
 3. `PORT=YOUR_PORT npm run srv`
 
 Then your notes will be available on your port. 
+
+
+## How to backup notes
+
+1. Create empty repository on github.
+2. `cd notes`
+3. `git remote add backup your-repository`
+4. `git push backup master`
+
+The first two lines only needs to 
