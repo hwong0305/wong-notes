@@ -6,7 +6,7 @@ import '../styles/Note.css'
 import relativeTime from 'dayjs/plugin/relativeTime'
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL || ''
-const converter = new showdown.Converter()
+const converter = new showdown.Converter({ tables: true })
 dayjs.extend(relativeTime)
 
 const Note = () => {
