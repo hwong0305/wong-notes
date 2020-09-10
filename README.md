@@ -3,6 +3,12 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 Self hosted markdown notes web application.
 
+## Initial Setup
+
+1. `mkdir notes`
+2. `cd notes`
+3. `git init`
+
 ## Starting Application
 
 1. `npm install`
@@ -19,4 +25,4 @@ Then your notes will be available on your port.
 3. `git remote add backup your-repository`
 4. `git push backup master`
 
-The first two lines only needs to 
+The first two lines only needs to be run once.
