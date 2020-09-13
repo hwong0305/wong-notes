@@ -35,6 +35,13 @@ app.get('/api/notes', async (_req, res) => {
       response.push(file)
     }
     const jData = await Promise.all(response)
+    jData.sort(function (a, b) {
+      const nameA = a.name.toUpperCase()
+      const nameB = b.name.toUpperCase()
+
+      if (nameA < nameB) return -1
+      return 1
+    })
     res.json(jData)
   } catch (err) {
     console.log(err)
