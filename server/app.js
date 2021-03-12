@@ -147,6 +147,10 @@ app.get('/api/notes/:id/logs/:commit', async (req, res) => {
   }
 })
 
+app.get('/*', function (req, res) {
+  res.sendFile(path.join(__dirname, '..', 'build', 'index.html'))
+})
+
 app.listen(SERVER_PORT, () => {
   console.log(`now listening on port ${SERVER_PORT}`)
 })
