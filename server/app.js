@@ -29,20 +29,23 @@ app.get('/api/notes', async (_req, res) => {
     const data = await readdir(path.join(__dirname, '..', 'notes'))
     const response = []
     for (let note of data) {
-      if (note === '.git') continue
+      if (note === '.git' || note === '.gitkeep') continue
       const buff = await readFile(path.join(__dirname, '..', 'notes', note))
       const file = JSON.parse(buff.toString('utf8'))
       response.push(file)
     }
-    const jData = await Promise.all(response)
-    jData.sort(function (a, b) {
-      const nameA = a.name.toUpperCase()
-      const nameB = b.name.toUpperCase()
+    if (response.length > 0) {
+      const jData = await Promise.all(response)
+      jData.sort(function (a, b) {
+        const nameA = a.name.toUpperCase()
+        const nameB = b.name.toUpperCase()
 
-      if (nameA < nameB) return -1
-      return 1
-    })
-    res.json(jData)
+        if (nameA < nameB) return -1
+        return 1
+      })
+      res.json(jData)
+    }
+    res.json([])
   } catch (err) {
     console.log(err)
     res.status(500).send('Error reading files')
