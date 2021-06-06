@@ -2,11 +2,41 @@ import React, { useEffect, useState } from 'react'
 import { Link, useHistory, useParams } from 'react-router-dom'
 import dayjs from 'dayjs'
 import showdown from 'showdown'
+import hljs from 'highlight.js'
 import '../styles/Note.css'
 import relativeTime from 'dayjs/plugin/relativeTime'
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL || ''
-const converter = new showdown.Converter({ tables: true })
+showdown.extension('highlight', function () {
+  return [
+    {
+      type: 'output',
+      filter: function (text, converter, options) {
+        var left = '<pre><code\\b[^>]*>',
+          right = '</code></pre>',
+          flags = 'g'
+        var replacement = function (wholeMatch, match, left, right) {
+          var lang = (left.match(/class="([^ "]+)/) || [])[1]
+          left = left.slice(0, 18) + 'hljs ' + left.slice(18)
+          if (lang && hljs.getLanguage(lang)) {
+            return left + hljs.highlight(lang, match).value + right
+          } else {
+            return left + hljs.highlightAuto(match).value + right
+          }
+        }
+        return showdown.helper.replaceRecursiveRegExp(
+          text,
+          replacement,
+          left,
+          right,
+          flags
+        )
+      }
+    }
+  ]
+})
+showdown.setFlavor('github')
+const converter = new showdown.Converter({ extensions: ['highlight'] })
 dayjs.extend(relativeTime)
 
 const Note = () => {

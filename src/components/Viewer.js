@@ -2,16 +2,43 @@ import React, { useRef, useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { isMobile } from 'react-device-detect'
 import showdown from 'showdown'
+import hljs from 'highlight.js'
 import Fuse from 'fuse.js'
 import _ from 'lodash'
 import '../styles/Viewer.css'
 
 const SERVER_URL = process.env.REACT_APP_SERVER_URL || ''
 
-const converter = new showdown.Converter({
-  strikethrough: true,
-  tables: true
+showdown.extension('highlight', function () {
+  return [
+    {
+      type: 'output',
+      filter: function (text, converter, options) {
+        var left = '<pre><code\\b[^>]*>',
+          right = '</code></pre>',
+          flags = 'g'
+        var replacement = function (wholeMatch, match, left, right) {
+          var lang = (left.match(/class="([^ "]+)/) || [])[1]
+          left = left.slice(0, 18) + 'hljs ' + left.slice(18)
+          if (lang && hljs.getLanguage(lang)) {
+            return left + hljs.highlight(lang, match).value + right
+          } else {
+            return left + hljs.highlightAuto(match).value + right
+          }
+        }
+        return showdown.helper.replaceRecursiveRegExp(
+          text,
+          replacement,
+          left,
+          right,
+          flags
+        )
+      }
+    }
+  ]
 })
+showdown.setFlavor('github')
+const converter = new showdown.Converter({ extensions: ['highlight'] })
 
 const options = {
   includeScore: true,
