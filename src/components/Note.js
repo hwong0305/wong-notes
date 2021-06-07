@@ -19,8 +19,8 @@ showdown.extension('highlight', function () {
           const lang = (left.match(/className="([^ "]+)/) || [])[1]
           match = match.replace(/(&lt;)/g, '<')
           match = match.replace(/(&gt;)/g, '>')
-          left = left.slice(0, 18) + 'hljs ' + left.slice(18)
           if (lang && hljs.getLanguage(lang)) {
+            left = left.slice(0, 18) + 'hljs ' + left.slice(18)
             return (
               left +
               hljs.highlight(match, {
