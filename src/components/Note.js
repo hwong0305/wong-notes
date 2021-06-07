@@ -16,7 +16,7 @@ showdown.extension('highlight', function () {
           right = '</code></pre>',
           flags = 'g'
         var replacement = function (wholeMatch, match, left, right) {
-          var lang = (left.match(/class="([^ "]+)/) || [])[1]
+          var lang = (left.match(/className="([^ "]+)/) || [])[1]
           left = left.slice(0, 18) + 'hljs ' + left.slice(18)
           if (lang && hljs.getLanguage(lang)) {
             return left + hljs.highlight(lang, match).value + right
@@ -113,7 +113,7 @@ const Note = () => {
         >
           Logs
         </button>
-        <ul class="dropdown-menu">
+        <ul className="dropdown-menu">
           {commits &&
             commits.map(el => {
               const com = el.hash.slice(0, 8)

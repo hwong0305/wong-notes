@@ -1,4 +1,5 @@
 import express from 'express'
+import cors from 'cors'
 import fs from 'fs'
 import path from 'path'
 import morgan from 'morgan'
@@ -23,6 +24,7 @@ const app = express()
 app.use(express.json())
 app.use(express.static('build'))
 app.use(morgan('dev'))
+app.use(cors())
 
 app.get('/api/notes', async (_req, res) => {
   try {
