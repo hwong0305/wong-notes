@@ -12,14 +12,22 @@ showdown.extension('highlight', function () {
     {
       type: 'output',
       filter: function (text, converter, options) {
-        var left = '<pre><code\\b[^>]*>',
-          right = '</code></pre>',
-          flags = 'g'
-        var replacement = function (wholeMatch, match, left, right) {
-          var lang = (left.match(/className="([^ "]+)/) || [])[1]
+        let left = '<pre><code\\b[^>]*>'
+        let right = '</code></pre>'
+        let flags = 'g'
+        const replacement = function (wholeMatch, match, left, right) {
+          const lang = (left.match(/className="([^ "]+)/) || [])[1]
+          match = match.replace(/(&lt;)/, '<')
+          match = match.replace(/(&gt;)/, '>')
           left = left.slice(0, 18) + 'hljs ' + left.slice(18)
           if (lang && hljs.getLanguage(lang)) {
-            return left + hljs.highlight(lang, match).value + right
+            return (
+              left +
+              hljs.highlight(match, {
+                language: lang
+              }).value +
+              right
+            )
           } else {
             return left + hljs.highlightAuto(match).value + right
           }
