@@ -73,7 +73,7 @@ app.post('/api/notes', async (req, res) => {
       JSON.stringify({ id, name, body })
     )
     await git.add(`./${id}.md`)
-    await git.commit('initial commit')
+    await git.commit(`initial commit ${id}`)
     res.status(201).send({ success: true })
   } catch (err) {
     console.log(err)
