@@ -29,6 +29,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "postinstall": "npm run build",
+    "srv": "node -r esm server/app.js",
     "serve": "concurrently \"yarn start\" \"yarn srv\""
   },
   "eslintConfig": {
