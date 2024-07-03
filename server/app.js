@@ -26,9 +26,12 @@ app.use(express.static('build'))
 app.use(morgan('dev'))
 app.use(cors())
 
+let tracker = {}
+
 app.get('/api/notes', async (_req, res) => {
   try {
     const data = await readdir(path.join(__dirname, '..', 'notes'))
+    tracker = await readFile(path.join(__dirname, '..', 'time.db'))
     const response = []
     for (let note of data) {
       if (note === '.git' || note === '.gitkeep') continue
@@ -37,13 +40,7 @@ app.get('/api/notes', async (_req, res) => {
       response.push(file)
     }
     const jData = await Promise.all(response)
-    jData.sort(function (a, b) {
-      const nameA = a.name.toUpperCase()
-      const nameB = b.name.toUpperCase()
-
-      if (nameA < nameB) return -1
-      return 1
-    })
+    jData.sort((a, b) => (tracker[a.id] < tracker[b.id] ? -1 : 1))
     res.json(jData || [])
   } catch (err) {
     console.log(err)
@@ -74,6 +71,12 @@ app.post('/api/notes', async (req, res) => {
     )
     await git.add(`./${id}.md`)
     await git.commit(`initial commit ${id}`)
+    tracker = await readFile(path.join(__dirname, '..', 'time.db'))
+    tracker[id] = Date.now()
+    await writeFile(
+      path.join(__dirname, '..', 'time.db'),
+      JSON.stringify(tracker)
+    )
     res.status(201).send({ success: true })
   } catch (err) {
     console.log(err)
@@ -92,6 +95,12 @@ app.put('/api/notes/:id', async (req, res) => {
     )
     await git.add(`./${id}.md`)
     await git.commit(commit || 'unknown edit')
+    tracker = await readFile(path.join(__dirname, '..', 'time.db'))
+    tracker[id] = Date.now()
+    await writeFile(
+      path.join(__dirname, '..', 'time.db'),
+      JSON.stringify(tracker)
+    )
     res.send({ success: true })
   } catch (err) {
     console.log(err)
