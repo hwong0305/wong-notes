@@ -31,8 +31,11 @@ let tracker = {}
 app.get('/api/notes', async (_req, res) => {
   try {
     const data = await readdir(path.join(__dirname, '..', 'notes'))
-    const buff = await readFile(path.join(__dirname, '..', 'time.db'))
-    console.log(buff.toString('utf8'))
+    tracker = JSON.parse(
+      (await readFile(path.join(__dirname, '..', 'time.db'))).toString(
+        'utf8'
+      ) || {}
+    )
     const response = []
     for (let note of data) {
       if (note === '.git' || note === '.gitkeep') continue
@@ -72,7 +75,11 @@ app.post('/api/notes', async (req, res) => {
     )
     await git.add(`./${id}.md`)
     await git.commit(`initial commit ${id}`)
-    tracker = await readFile(path.join(__dirname, '..', 'time.db'))
+    tracker = JSON.parse(
+      (await readFile(path.join(__dirname, '..', 'time.db'))).toString(
+        'utf8'
+      ) || {}
+    )
     tracker[id] = Date.now()
     await writeFile(
       path.join(__dirname, '..', 'time.db'),
@@ -96,7 +103,11 @@ app.put('/api/notes/:id', async (req, res) => {
     )
     await git.add(`./${id}.md`)
     await git.commit(commit || 'unknown edit')
-    tracker = await readFile(path.join(__dirname, '..', 'time.db'))
+    tracker = JSON.parse(
+      (await readFile(path.join(__dirname, '..', 'time.db'))).toString(
+        'utf8'
+      ) || {}
+    )
     tracker[id] = Date.now()
     await writeFile(
       path.join(__dirname, '..', 'time.db'),
