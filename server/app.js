@@ -31,7 +31,8 @@ let tracker = {}
 app.get('/api/notes', async (_req, res) => {
   try {
     const data = await readdir(path.join(__dirname, '..', 'notes'))
-    tracker = await readFile(path.join(__dirname, '..', 'time.db'))
+    const buff = await readFile(path.join(__dirname, '..', 'time.db'))
+    console.log(buff.toString('utf8'))
     const response = []
     for (let note of data) {
       if (note === '.git' || note === '.gitkeep') continue
@@ -40,7 +41,7 @@ app.get('/api/notes', async (_req, res) => {
       response.push(file)
     }
     const jData = await Promise.all(response)
-    jData.sort((a, b) => (tracker[a.id] < tracker[b.id] ? -1 : 1))
+    jData.sort((a, b) => (tracker[a.id] > tracker[b.id] ? -1 : 1))
     res.json(jData || [])
   } catch (err) {
     console.log(err)
