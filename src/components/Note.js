@@ -135,7 +135,7 @@ const Note = () => {
                     }}
                   >
                     <div className="flex-column align-items-start">
-                      <div classname="d-flex w-100 justify-content-between">
+                      <div className="d-flex w-100 justify-content-between">
                         <h5 className="mb-1 h4">{com}</h5>
                         <small>{ago}</small>
                       </div>
